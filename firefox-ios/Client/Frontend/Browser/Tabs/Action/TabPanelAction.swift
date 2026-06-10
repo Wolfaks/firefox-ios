@@ -60,7 +60,6 @@ enum TabPanelViewActionType: ActionType {
     case deleteTabsOlderThan
     case moveTab
     case learnMorePrivateMode
-    case selectTab
 }
 
 struct TabPanelMiddlewareAction: Action {
@@ -110,4 +109,12 @@ enum ScreenshotActionType: ActionType {
 // MARK: Modernizing actions
 enum TabPanelViewModernAction: ModernAction {
     case addNewTab(TabTrayPanelType)
+    case selectTab(SelectedTabPayload)
+}
+
+// MARK: Payloads for `TabPanelViewModernAction`
+struct SelectedTabPayload {
+    let tabUUID: TabUUID
+    let index: Int
+    let panelType: TabTrayPanelType
 }
