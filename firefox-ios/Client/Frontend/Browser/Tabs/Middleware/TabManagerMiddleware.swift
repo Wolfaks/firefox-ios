@@ -58,7 +58,17 @@ final class TabManagerMiddleware: FeatureFlaggable, CanRemoveQuickActionBookmark
     lazy var tabsPanelProvider: Middleware<AppState> = (legacyProvider, modernProvider)
 
     lazy var modernProvider: MiddlewareMethod<AppState> = { [self] state, action, windowUUID in
-        // Does not test any modern actions
+        if let action = action as? TabPanelViewModernAction {
+            switch action {
+            case .addNewTab(let panelType):
+                let isPrivateMode = panelType == .privateTabs
+                tabsPanelTelemetry.newTabButtonTapped(mode: panelType.modeForTelemetry)
+                addNewTab(with: nil, isPrivate: isPrivateMode, showOverlay: true, for: windowUUID)
+                dispatchRecentlyAccessedTabsAction(forWindowUUID: windowUUID)
+            default:
+                break
+            }
+        }
     }
 
     lazy var legacyProvider: LegacyMiddlewareMethod<AppState> = { [self] state, action in
@@ -174,10 +184,10 @@ final class TabManagerMiddleware: FeatureFlaggable, CanRemoveQuickActionBookmark
         // FXIOS-11740 - This is relate to homepage actions, so if we want to break up this middleware
         // then this action should go to the homepage specific middleware.
         case TabTrayActionType.dismissTabTray, TabTrayActionType.modalSwipedToClose:
-            dispatchRecentlyAccessedTabs(action: action)
+            dispatchRecentlyAccessedTabsAction(forWindowUUID: action.windowUUID)
         case TabTrayActionType.doneButtonTapped:
             tabsPanelTelemetry.doneButtonTapped(mode: action.panelType?.modeForTelemetry ?? .normal)
-            dispatchRecentlyAccessedTabs(action: action)
+            dispatchRecentlyAccessedTabsAction(forWindowUUID: action.windowUUID)
         default:
             break
         }
@@ -208,11 +218,6 @@ final class TabManagerMiddleware: FeatureFlaggable, CanRemoveQuickActionBookmark
                                                   actionType: TabPanelMiddlewareActionType.willAppearTabPanel)
             store.dispatch(action)
 
-        case TabPanelViewActionType.addNewTab:
-            let isPrivateMode = action.panelType == .privateTabs
-            tabsPanelTelemetry.newTabButtonTapped(mode: action.panelType?.modeForTelemetry ?? .normal)
-            addNewTab(with: action.urlRequest, isPrivate: isPrivateMode, showOverlay: true, for: action.windowUUID)
-            dispatchRecentlyAccessedTabs(action: action)
         case TabPanelViewActionType.moveTab:
             guard let moveTabData = action.moveTabData else { return }
             moveTab(state: state, moveTabData: moveTabData, uuid: action.windowUUID)
@@ -949,7 +954,7 @@ final class TabManagerMiddleware: FeatureFlaggable, CanRemoveQuickActionBookmark
             HomepageMiddlewareActionType.jumpBackInLocalTabsUpdated,
             TopTabsActionType.didTapNewTab,
             TopTabsActionType.didTapCloseTab:
-            dispatchRecentlyAccessedTabs(action: action)
+            dispatchRecentlyAccessedTabsAction(forWindowUUID: action.windowUUID)
         case JumpBackInActionType.tapOnCell:
             guard let jumpBackInAction = action as? JumpBackInAction,
                   let tab = jumpBackInAction.tab else { return }
@@ -1034,13 +1039,13 @@ final class TabManagerMiddleware: FeatureFlaggable, CanRemoveQuickActionBookmark
     }
 
     /// Sends out updated recent tabs which is currently used for the homepage jumpBackIn section
-    private func dispatchRecentlyAccessedTabs(action: Action) {
-        guard let tabManager = tabManager(for: action.windowUUID) else { return }
+    private func dispatchRecentlyAccessedTabsAction(forWindowUUID windowUUID: WindowUUID) {
+        guard let tabManager = tabManager(for: windowUUID) else { return }
         let recentTabs = tabManager.recentlyAccessedNormalTabs
         store.dispatch(
             TabManagerAction(
                 recentTabs: recentTabs,
-                windowUUID: action.windowUUID,
+                windowUUID: windowUUID,
                 actionType: TabManagerMiddlewareActionType.fetchedRecentTabs
             )
         )
