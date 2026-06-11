@@ -49,7 +49,6 @@ enum TabPanelViewActionType: ActionType {
     case cancelCloseAllTabs
     case confirmCloseAllTabs
     case deleteTabsOlderThan
-    case learnMorePrivateMode
 }
 
 struct TabPanelMiddlewareAction: Action {
@@ -101,6 +100,7 @@ enum TabPanelViewModernAction: ModernAction {
     case addNewTab(TabTrayPanelType)
     case moveTab(MoveTabPayload)
     case selectTab(SelectedTabPayload)
+    case learnMoreAboutPrivateMode
 }
 
 // MARK: Payloads for `TabPanelViewModernAction`
