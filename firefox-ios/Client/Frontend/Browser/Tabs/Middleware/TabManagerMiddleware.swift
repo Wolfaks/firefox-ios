@@ -66,6 +66,9 @@ final class TabManagerMiddleware: FeatureFlaggable, CanRemoveQuickActionBookmark
                 addNewTab(with: nil, isPrivate: isPrivateMode, showOverlay: true, for: windowUUID)
                 dispatchRecentlyAccessedTabsAction(forWindowUUID: windowUUID)
 
+            case let .deleteTabsOlderThan(deleteTabPeriod):
+                deleteNormalTabsOlderThan(period: deleteTabPeriod, uuid: windowUUID)
+
             case let .moveTab(moveTabPayload):
                 moveTab(state: state, moveTabPayload: moveTabPayload, uuid: windowUUID)
 
@@ -244,10 +247,6 @@ final class TabManagerMiddleware: FeatureFlaggable, CanRemoveQuickActionBookmark
 
         case TabPanelViewActionType.confirmCloseAllTabs:
             closeAllTabs(state: state, uuid: action.windowUUID)
-
-        case TabPanelViewActionType.deleteTabsOlderThan:
-            guard let period = action.deleteTabPeriod else { return }
-            deleteNormalTabsOlderThan(period: period, uuid: action.windowUUID)
 
         default:
             break
