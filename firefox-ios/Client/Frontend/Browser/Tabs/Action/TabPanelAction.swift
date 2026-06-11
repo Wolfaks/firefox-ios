@@ -47,7 +47,6 @@ enum TabPanelViewActionType: ActionType {
     case closeTab
     case closeAllTabs
     case cancelCloseAllTabs
-    case confirmCloseAllTabs
 }
 
 struct TabPanelMiddlewareAction: Action {
@@ -97,6 +96,7 @@ enum ScreenshotActionType: ActionType {
 // MARK: Modernizing actions
 enum TabPanelViewModernAction: ModernAction {
     case addNewTab(TabTrayPanelType)
+    case confirmCloseAllTabs(isPrivateMode: Bool)
     case deleteTabsOlderThan(TabsDeletionPeriod)
     case moveTab(MoveTabPayload)
     case selectTab(SelectedTabPayload)
