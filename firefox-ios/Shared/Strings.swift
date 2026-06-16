@@ -3491,22 +3491,6 @@ extension String {
                     )
                 }
 
-                public struct GoogleLensSection {
-                    public static let Title = MZLocalizedString(
-                        key: "Settings.AIControls.AIPoweredFeaturesSection.GoogleLensSection.Title.v153",
-                        tableName: "Settings",
-                        value: "Google Lens",
-                        comment: "In the AI Controls settings, in the AI powered features section, this is the title that describes the Google Lens feature"
-                    )
-
-                    public static let Message = MZLocalizedString(
-                        key: "Settings.AIControls.AIPoweredFeaturesSection.GoogleLensSection.Message.v153",
-                        tableName: "Settings",
-                        value: "Sends images and photos to Google for visual search.",
-                        comment: "In the AI Controls settings, in the AI powered features section, this is the message that describes the Google Lens feature"
-                    )
-                }
-
                 public static let BlockedStatus = MZLocalizedString(
                     key: "Settings.AIControls.AIPoweredFeaturesSection.BlockedStatus.v151",
                     tableName: "Settings",
@@ -4252,6 +4236,29 @@ extension String {
                     tableName: "Settings",
                     value: "Learn more about Firefox Suggest",
                     comment: "Accessibility label for Learn more about Firefox Suggest.")
+            }
+
+            public struct GoogleLens {
+                public static let Title = MZLocalizedString(
+                    key: "Settings.Search.GoogleLens.Title.v153",
+                    tableName: "Settings",
+                    value: "Google Lens",
+                    comment: "In the Search settings, this is the title that describes the Google Lens feature"
+                )
+
+                public static let Description = MZLocalizedString(
+                    key: "Settings.Search.GoogleLens.Description.v153",
+                    tableName: "Settings",
+                    value: "Sends images and photos to Google for visual search.",
+                    comment: "In the Search settings, this is the description that describes the Google Lens feature"
+                )
+
+                public static let Footnote = MZLocalizedString(
+                    key: "Settings.Search.GoogleLens.Footnote.v153",
+                    tableName: "Settings",
+                    value: "Available only when Google is enabled above and is your active search engine while browsing.",
+                    comment: "In the Search settings, this is the disclaimer underneath the Google Lens settings toggle that explains the conditions required for Google Lens to be available."
+                )
             }
 
             public struct SearchZero {
@@ -5711,6 +5718,17 @@ extension String {
         tableName: "WebContextMenu",
         value: "Search Image with Google Lens",
         comment: "Context menu item to search for an image using Google Lens")
+}
+
+// MARK: - Camera access
+extension String {
+    public struct CameraAccess {
+        public static let DisabledAlertMessage = MZLocalizedString(
+            key: "CameraAccess.DisabledAlertMessage.v153",
+            tableName: "Camera",
+            value: "Go to Settings > Firefox on your device to allow Firefox to use your camera.",
+            comment: "Message shown in an alert when camera access is disabled in iOS Settings. This is used by features that require camera access, such as QR code scanning and Google Lens.")
+    }
 }
 
 // MARK: - Photo Library access
@@ -7978,9 +7996,9 @@ extension String {
 
         public struct GoogleLens {
             public static let A11yLabel = MZLocalizedString(
-                key: "AddressToolbar.GoogleLens.A11yLabel.v153",
+                key: "AddressToolbar.GoogleLens.A11yLabel.v153.v2",
                 tableName: "AddressToolbar",
-                value: "Search with Google Lens",
+                value: "Search image with Google Lens",
                 comment: "Accessibility label describing the Google Lens button on the address toolbar that prompts a menu to allow the user to take a new photo or select an existing photo from their photo library to search with Google Lens.")
 
             public struct ContextMenu {
